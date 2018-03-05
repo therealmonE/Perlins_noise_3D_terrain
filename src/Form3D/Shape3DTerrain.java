@@ -48,6 +48,8 @@ public class Shape3DTerrain extends TriangleMesh {
         texCoord.add(new Point2D(0, 1));
 
         faces.add(new Point3D(2, 1, 0));
+
+        initPoints();
     }
 
     public void addPoint(float x, float y, float z) {
@@ -86,6 +88,11 @@ public class Shape3DTerrain extends TriangleMesh {
         System.out.println("points: " + points.toString());
         System.out.println("texCoord: " + texCoord.toString());
         System.out.println("faces: " + faces.toString());
+
+        this.getPoints().clear();
+        this.getTexCoords().clear();
+        this.getFaces().clear();
+
         for(Point3D point: points) {
             this.getPoints().addAll((float)point.getX(), (float)point.getY(), (float)point.getZ());
         }

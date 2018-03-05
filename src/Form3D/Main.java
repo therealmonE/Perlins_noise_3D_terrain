@@ -2,12 +2,17 @@ package Form3D;
 
 import javafx.application.Application;
 import javafx.scene.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+
+import java.util.Random;
+
+import static java.lang.Math.random;
 
 public class Main extends Application {
     final Group root = new Group();
@@ -18,6 +23,10 @@ public class Main extends Application {
     final Xform cameraXform = new Xform();
     final Xform cameraXform2 = new Xform();
     final Xform cameraXform3 = new Xform();
+
+    Shape3DTerrain terrain = new Shape3DTerrain();
+    Random random = new Random();
+
     private static final double CAMERA_INITIAL_DISTANCE = -250.0;
     private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
     private static final double CAMERA_INITIAL_Y_ANGLE = 320.0;
@@ -100,6 +109,25 @@ public class Main extends Application {
         }); // setOnMouseDragged
     } //handleMouse
 
+    private void handleKeyboard(Scene scene, final Node root) {
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+
+                switch (event.getCode()) {
+                    case P:
+                        System.out.println("keyHandle");
+                        terrain.addPoint(
+                                random.nextInt(20) - 10f,
+                                random.nextInt(20) - 10f,
+                                random.nextInt(20) - 10f);
+                        terrain.initPoints();
+                        break;
+                }
+            }
+        });
+    }
+
     private void buildAxes() {
         final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
@@ -127,7 +155,6 @@ public class Main extends Application {
     }
 
     private void buildTerrain() {
-        Shape3DTerrain terrain = new Shape3DTerrain();
         MeshView meshView = new MeshView(terrain);
         meshView.setVisible(true);
         meshView.setCullFace(CullFace.NONE);
@@ -155,14 +182,15 @@ public class Main extends Application {
         buildAxes();
         buildTerrain();
 
-        AmbientLight light = new AmbientLight();
-        light.setTranslateY(15);
-        light.setColor(Color.WHITE);
-        world.getChildren().addAll(light);
+//        AmbientLight light = new AmbientLight();
+//        light.setTranslateY(15);
+//        light.setColor(Color.WHITE);
+//        world.getChildren().addAll(light);
 
         Scene scene = new Scene(root, 1024, 768, true);
         scene.setFill(Color.BLACK);
         handleMouse(scene, world);
+        handleKeyboard(scene, world);
 
         primaryStage.setTitle("Perlin's noize terrain");
         primaryStage.setScene(scene);

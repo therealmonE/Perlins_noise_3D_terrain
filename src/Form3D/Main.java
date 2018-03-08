@@ -1,31 +1,27 @@
 package Form3D;
 
 import javafx.application.Application;
+import javafx.geometry.Point3D;
 import javafx.scene.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 
 import java.util.Random;
 
-import static java.lang.Math.random;
-
 public class Main extends Application {
-    final Group root = new Group();
-    final Xform world = new Xform();
-    final Xform axisGroup = new Xform();
+    private final Group root = new Group();
+    private final Xform world = new Xform();
+    private final Xform axisGroup = new Xform();
 
-    final PerspectiveCamera camera = new PerspectiveCamera(true);
-    final Xform cameraXform = new Xform();
-    final Xform cameraXform2 = new Xform();
-    final Xform cameraXform3 = new Xform();
+    private final PerspectiveCamera camera = new PerspectiveCamera(true);
+    private final Xform cameraXform = new Xform();
+    private final Xform cameraXform2 = new Xform();
+    private final Xform cameraXform3 = new Xform();
 
-    Shape3DTerrain terrain = new Shape3DTerrain();
-    Random random = new Random();
+    private Shape3DTerrain terrain = new Shape3DTerrain(new Point3D(-100, 0, -100));
+    private Random random = new Random();
 
     private static final double CAMERA_INITIAL_DISTANCE = -250.0;
     private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
@@ -40,12 +36,12 @@ public class Main extends Application {
         private static final double ROTATION_SPEED = 2.0;
         private static final double TRACK_SPEED = 0.3;
 
-        double mousePosX;
-        double mousePosY;
-        double mouseOldX;
-        double mouseOldY;
-        double mouseDeltaX;
-        double mouseDeltaY;
+        private double mousePosX;
+        private double mousePosY;
+        private double mouseOldX;
+        private double mouseOldY;
+        private double mouseDeltaX;
+        private double mouseDeltaY;
 
     private void buildCamera() {
         root.getChildren().add(cameraXform);
@@ -61,69 +57,58 @@ public class Main extends Application {
         cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
     }
 
-    private void handleMouse(Scene scene, final Node root) {
+    private void handleMouse(Scene scene) {
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseOldX = me.getSceneX();
-                mouseOldY = me.getSceneY();
-            }
+        scene.setOnMousePressed(me -> {
+            mousePosX = me.getSceneX();
+            mousePosY = me.getSceneY();
+            mouseOldX = me.getSceneX();
+            mouseOldY = me.getSceneY();
         });
-        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
-                mouseOldX = mousePosX;
-                mouseOldY = mousePosY;
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseDeltaX = (mousePosX - mouseOldX);
-                mouseDeltaY = (mousePosY - mouseOldY);
+        scene.setOnMouseDragged(me -> {
+            mouseOldX = mousePosX;
+            mouseOldY = mousePosY;
+            mousePosX = me.getSceneX();
+            mousePosY = me.getSceneY();
+            mouseDeltaX = (mousePosX - mouseOldX);
+            mouseDeltaY = (mousePosY - mouseOldY);
 
-                double modifier = 0.5;
+            double modifier = 0.5;
 
-                if (me.isControlDown()) {
-                    modifier = CONTROL_MULTIPLIER;
-                }
-                if (me.isShiftDown()) {
-                    modifier = SHIFT_MULTIPLIER;
-                }
-                if (me.isPrimaryButtonDown()) {
-                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() -
-                            mouseDeltaX*modifier*modifier*ROTATION_SPEED);  //
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() +
-                            mouseDeltaY*modifier*modifier*ROTATION_SPEED);  // -
-                }
-                else if (me.isSecondaryButtonDown()) {
-                    double z = camera.getTranslateZ();
-                    double newZ = z + mouseDeltaX*MOUSE_SPEED*modifier;
-                    camera.setTranslateZ(newZ);
-                }
-                else if (me.isMiddleButtonDown()) {
-                    cameraXform2.t.setX(cameraXform2.t.getX() +
-                            mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);  // -
-                    cameraXform2.t.setY(cameraXform2.t.getY() +
-                            mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);  // -
-                }
+            if (me.isControlDown()) {
+                modifier = CONTROL_MULTIPLIER;
+            }
+            if (me.isShiftDown()) {
+                modifier = SHIFT_MULTIPLIER;
+            }
+            if (me.isPrimaryButtonDown()) {
+                cameraXform.ry.setAngle(cameraXform.ry.getAngle() -
+                        mouseDeltaX*modifier*modifier*ROTATION_SPEED);  //
+                cameraXform.rx.setAngle(cameraXform.rx.getAngle() +
+                        mouseDeltaY*modifier*modifier*ROTATION_SPEED);  // -
+            }
+            else if (me.isSecondaryButtonDown()) {
+                double z = camera.getTranslateZ();
+                double newZ = z + mouseDeltaX*MOUSE_SPEED*modifier;
+                camera.setTranslateZ(newZ);
+            }
+            else if (me.isMiddleButtonDown()) {
+                cameraXform2.t.setX(cameraXform2.t.getX() +
+                        mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);  // -
+                cameraXform2.t.setY(cameraXform2.t.getY() +
+                        mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);  // -
             }
         }); // setOnMouseDragged
     } //handleMouse
 
-    private void handleKeyboard(Scene scene, final Node root) {
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
+    private void handleKeyboard(Scene scene) {
+        scene.setOnKeyPressed(event -> {
 
-                switch (event.getCode()) {
-                    case P:
-                        System.out.println("keyHandle");
-                        terrain.addPoint(
-                                random.nextInt(20) - 10f,
-                                random.nextInt(20) - 10f,
-                                random.nextInt(20) - 10f);
-                        terrain.initPoints();
-                        break;
-                }
+            switch (event.getCode()) {
+                case P:
+                    terrain.addPoint(random.nextInt(200) - 100, random.nextInt(20) - 10, random.nextInt(200) - 100);
+                    terrain.initPoints();
+                    break;
             }
         });
     }
@@ -165,7 +150,6 @@ public class Main extends Application {
 
         meshView.setMaterial(material);
 
-        terrain.addPoint(-50, 100, 50);
         terrain.initPoints();
 
         world.getChildren().addAll(meshView);
@@ -182,15 +166,15 @@ public class Main extends Application {
         buildAxes();
         buildTerrain();
 
-//        AmbientLight light = new AmbientLight();
-//        light.setTranslateY(15);
-//        light.setColor(Color.WHITE);
-//        world.getChildren().addAll(light);
+        AmbientLight light = new AmbientLight();
+        light.setTranslateY(15);
+        light.setColor(Color.WHITE);
+        world.getChildren().addAll(light);
 
         Scene scene = new Scene(root, 1024, 768, true);
         scene.setFill(Color.BLACK);
-        handleMouse(scene, world);
-        handleKeyboard(scene, world);
+        handleMouse(scene);
+        handleKeyboard(scene);
 
         primaryStage.setTitle("Perlin's noize terrain");
         primaryStage.setScene(scene);

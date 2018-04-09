@@ -1,4 +1,4 @@
-package Form3D;
+package ru.therealmone.PerlinsNoise;
 
 import javafx.application.Application;
 import javafx.geometry.Point3D;
@@ -22,6 +22,7 @@ public class Main extends Application {
 
     private Shape3DTerrain terrain = new Shape3DTerrain(new Point3D(-100, 0, -100));
     private Random random = new Random();
+    private Noise noise = new Noise();
 
     private static final double CAMERA_INITIAL_DISTANCE = -250.0;
     private static final double CAMERA_INITIAL_X_ANGLE = 70.0;

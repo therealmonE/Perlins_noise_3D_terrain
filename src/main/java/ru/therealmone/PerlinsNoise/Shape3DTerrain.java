@@ -1,4 +1,4 @@
-package Form3D;
+package ru.therealmone.PerlinsNoise;
 
 import com.sun.javafx.geom.Vec3d;
 import javafx.geometry.Point3D;
@@ -7,8 +7,8 @@ import javafx.scene.shape.TriangleMesh;
 import java.util.ArrayList;
 
 public class Shape3DTerrain extends TriangleMesh {
-    private ArrayList<Point3D> points = new ArrayList<>();
-    private ArrayList<Point3D> faces = new ArrayList<>();
+    private ArrayList<Point3D> points = new ArrayList<Point3D>();
+    private ArrayList<Point3D> faces = new ArrayList<Point3D>();
 
     public Shape3DTerrain(Point3D firstPoint) {
 

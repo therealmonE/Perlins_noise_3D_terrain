@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Form3D;
+package ru.therealmone.PerlinsNoise;
 
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;

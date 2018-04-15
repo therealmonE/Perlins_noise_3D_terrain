@@ -6,18 +6,18 @@ import javafx.scene.shape.TriangleMesh;
 
 import java.util.ArrayList;
 
-public class Shape3DTerrain extends TriangleMesh {
+class Shape3DTerrain extends TriangleMesh {
     private ArrayList<Point3D> points = new ArrayList<Point3D>();
     private ArrayList<Point3D> faces = new ArrayList<Point3D>();
 
-    public Shape3DTerrain(Point3D firstPoint) {
+    Shape3DTerrain(Point3D firstPoint) {
 
         points.add(firstPoint);
         this.getTexCoords().addAll(1,1,1,0,0,0,0,1);
 
     }
 
-    public void addPoint(float x, float y, float z) {
+    void addPoint(float x, float y, float z) {
 
         int firstPoint = 0;
         Point3D tempPoint = points.get(0);
@@ -51,11 +51,11 @@ public class Shape3DTerrain extends TriangleMesh {
 
     }
 
-    public void initPoints() {
+    void initPoints() {
 
 //        System.out.println("initPoints");
 //        System.out.println("points: " + points.toString());
-//        System.out.println("texCoord: " + texCoord.toString());
+//        System.out.println("texCoord: " + this.getTexCoords().toString());
 //        System.out.println("faces: " + faces.toString());
 
         this.getPoints().clear();

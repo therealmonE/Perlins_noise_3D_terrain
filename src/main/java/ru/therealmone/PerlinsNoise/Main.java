@@ -151,6 +151,7 @@ public class Main extends Application {
 
         meshView.setMaterial(material);
 
+
         terrain.initPoints();
 
         world.getChildren().addAll(meshView);

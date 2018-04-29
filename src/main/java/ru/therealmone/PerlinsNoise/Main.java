@@ -22,11 +22,13 @@ public class Main extends Application {
     private final Xform cameraXform3 = new Xform();
 
     private Shape3DTerrain terrain = new Shape3DTerrain();
-    private static final int LINES_COUNT = 100;
-    private static final int INTERVAL = 10;
+    private static final int LINES_COUNT = 200;
+    private static final int INTERVAL = 20;
+    private static final double XOFF_INTERVAL = 0.04;
+    private static final double YOFF_INTERVAL = 0.04;
     private Random random = new Random();
 
-    private static final double CAMERA_INITIAL_DISTANCE = -250.0;
+    private static final double CAMERA_INITIAL_DISTANCE = -3000;
     private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
     private static final double CAMERA_INITIAL_Y_ANGLE = 320.0;
     private static final double CAMERA_NEAR_CLIP  = 0.1;
@@ -143,24 +145,19 @@ public class Main extends Application {
     }
 
     private void buildTerrain() {
-        MeshView meshView = new MeshView(terrain);
-        meshView.setVisible(true);
-        meshView.setCullFace(CullFace.NONE);
+        double xoff = 0.01;
+        double yoff = 0.01;
 
-        PhongMaterial material = new PhongMaterial();
-        material.setDiffuseColor(Color.GREY);
-        material.setSpecularColor(Color.BLACK);
-
-        meshView.setMaterial(material);
-
-        //terrain build part
         for (int i = 0; i < LINES_COUNT; i++) {
             for (int j = 0; j < LINES_COUNT; j++) {
                 terrain.addPoint(
                         j * INTERVAL - (LINES_COUNT * INTERVAL) / 2,
-                        random.nextInt(100) - 50,
+                        (float)noise(xoff, yoff) * 100,
                         i * INTERVAL - (LINES_COUNT * INTERVAL) / 2);
+                xoff += XOFF_INTERVAL;
             }
+            xoff = 0.01;
+            yoff += YOFF_INTERVAL;
         }
 
         for (int i = 0; i < LINES_COUNT - 1; i++) {
@@ -169,6 +166,16 @@ public class Main extends Application {
                 terrain.addFace(j + LINES_COUNT *(i + 1), (j + 1) + LINES_COUNT * i, (j + 1) + LINES_COUNT * (i + 1));
             }
         }
+
+        MeshView meshView = new MeshView(terrain);
+        meshView.setVisible(true);
+        meshView.setCullFace(CullFace.NONE);
+
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(Color.GREY);
+        material.setSpecularColor(Color.BLACK);
+
+        //meshView.setMaterial(material);
 
         terrain.initPoints();
         world.getChildren().addAll(meshView);
@@ -182,16 +189,18 @@ public class Main extends Application {
         root.setDepthTest(DepthTest.ENABLE);
 
         buildCamera();
-        buildAxes();
+        //buildAxes();
         buildTerrain();
 
-        AmbientLight light = new AmbientLight();
-        light.setTranslateY(15);
+        PointLight light = new PointLight();
+        light.setTranslateY(800);
+        light.setTranslateX(2000);
+        light.setTranslateZ(500);
         light.setColor(Color.WHITE);
         world.getChildren().addAll(light);
 
         Scene scene = new Scene(root, 1024, 768, true);
-        scene.setFill(Color.BLACK);
+        scene.setFill(Color.SILVER);
         handleMouse(scene);
         handleKeyboard(scene);
 

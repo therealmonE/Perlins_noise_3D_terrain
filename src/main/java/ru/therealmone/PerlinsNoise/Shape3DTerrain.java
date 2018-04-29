@@ -10,14 +10,11 @@ class Shape3DTerrain extends TriangleMesh {
     private ArrayList<Point3D> points = new ArrayList<Point3D>();
     private ArrayList<Point3D> faces = new ArrayList<Point3D>();
 
-    Shape3DTerrain(Point3D firstPoint) {
-
-        points.add(firstPoint);
+    Shape3DTerrain() {
         this.getTexCoords().addAll(1,1,1,0,0,0,0,1);
-
     }
 
-    void addPoint(float x, float y, float z) {
+    void addPointWithFace(float x, float y, float z) {
 
         int firstPoint = 0;
         Point3D tempPoint = points.get(0);
@@ -46,17 +43,24 @@ class Shape3DTerrain extends TriangleMesh {
         }
 
         points.add(new Point3D(x, y, z));
-        //texCoord.add(new Point2D(1,1));
         faces.add(new Point3D(firstPoint, secondPoint, points.size() - 1));
 
     }
 
+    void addPoint(float x, float y, float z) {
+        this.points.add(new Point3D(x, y, z));
+    }
+
+    void addFace(int pointIndex1, int pointIndex2, int pointIndex3) {
+        faces.add(new Point3D(pointIndex1, pointIndex2, pointIndex3));
+    }
+
     void initPoints() {
 
-//        System.out.println("initPoints");
-//        System.out.println("points: " + points.toString());
-//        System.out.println("texCoord: " + this.getTexCoords().toString());
-//        System.out.println("faces: " + faces.toString());
+        System.out.println("initPoints");
+        System.out.println("points: " + points.toString());
+        System.out.println("texCoord: " + this.getTexCoords().toString());
+        System.out.println("faces: " + faces.toString());
 
         this.getPoints().clear();
         this.getFaces().clear();
@@ -72,10 +76,10 @@ class Shape3DTerrain extends TriangleMesh {
                     (int)face.getZ(), 1);
         }
 
-//        System.out.println("initDone");
-//        System.out.println("points: " + this.getPoints().toString());
-//        System.out.println("texCoord: " + this.getTexCoords().toString());
-//        System.out.println("faces: " + this.getFaces().toString());
+        System.out.println("initDone");
+        System.out.println("points: " + this.getPoints().toString());
+        System.out.println("texCoord: " + this.getTexCoords().toString());
+        System.out.println("faces: " + this.getFaces().toString());
 
     }
 }

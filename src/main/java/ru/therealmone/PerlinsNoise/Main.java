@@ -1,7 +1,6 @@
 package ru.therealmone.PerlinsNoise;
 
 import javafx.application.Application;
-import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -9,6 +8,8 @@ import javafx.scene.shape.*;
 import javafx.stage.Stage;
 
 import java.util.Random;
+
+import static ru.therealmone.PerlinsNoise.Noise.noise;
 
 public class Main extends Application {
     private final Group root = new Group();
@@ -20,9 +21,10 @@ public class Main extends Application {
     private final Xform cameraXform2 = new Xform();
     private final Xform cameraXform3 = new Xform();
 
-    private Shape3DTerrain terrain = new Shape3DTerrain(new Point3D(-100, 0, -100));
+    private Shape3DTerrain terrain = new Shape3DTerrain();
+    private static final int LINES_COUNT = 100;
+    private static final int INTERVAL = 10;
     private Random random = new Random();
-    private Noise noise = new Noise();
 
     private static final double CAMERA_INITIAL_DISTANCE = -250.0;
     private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
@@ -107,7 +109,7 @@ public class Main extends Application {
 
             switch (event.getCode()) {
                 case P:
-                    terrain.addPoint(random.nextInt(200) - 100, random.nextInt(20) - 10, random.nextInt(200) - 100);
+                    terrain.addPointWithFace(random.nextInt(200) - 100, random.nextInt(20) - 10, random.nextInt(200) - 100);
                     terrain.initPoints();
                     break;
             }
@@ -151,9 +153,24 @@ public class Main extends Application {
 
         meshView.setMaterial(material);
 
+        //terrain build part
+        for (int i = 0; i < LINES_COUNT; i++) {
+            for (int j = 0; j < LINES_COUNT; j++) {
+                terrain.addPoint(
+                        j * INTERVAL - (LINES_COUNT * INTERVAL) / 2,
+                        random.nextInt(100) - 50,
+                        i * INTERVAL - (LINES_COUNT * INTERVAL) / 2);
+            }
+        }
+
+        for (int i = 0; i < LINES_COUNT - 1; i++) {
+            for (int j = 0; j < LINES_COUNT - 1; j++) {
+                terrain.addFace(j + LINES_COUNT * i, j + LINES_COUNT * (i + 1), (j + 1) + LINES_COUNT * i);
+                terrain.addFace(j + LINES_COUNT *(i + 1), (j + 1) + LINES_COUNT * i, (j + 1) + LINES_COUNT * (i + 1));
+            }
+        }
 
         terrain.initPoints();
-
         world.getChildren().addAll(meshView);
     }
 
